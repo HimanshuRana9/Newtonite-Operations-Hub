@@ -1,14 +1,58 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
-import { ShieldAlert, ArrowRight, Lock, Mail, Users, CheckCircle } from 'lucide-react';
+import { RoleBadge } from '../components/Badge.js';
+import {
+  ShieldAlert,
+  ArrowRight,
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  Zap,
+  RotateCcw,
+  Layers,
+  CheckCircle,
+  Users,
+  AlertCircle
+} from 'lucide-react';
 
-const DEMO_ACCOUNTS = [
-  { role: 'ADMIN', name: 'Alice Admin', email: 'admin@newtonite.io', desc: 'Manage teams, users & full approvals' },
-  { role: 'LEAD', name: 'Leo Lead', email: 'lead@newtonite.io', desc: 'Approve or reject workflow transitions' },
-  { role: 'MEMBER', name: 'Maya Member', email: 'member@newtonite.io', desc: 'Create, claim, edit and progress work' },
-  { role: 'VIEWER', name: 'Victor Viewer', email: 'viewer@newtonite.io', desc: 'Read-only access to team work items' },
-  { role: 'EXTERNAL', name: 'Eve External', email: 'extern@newtonite.io', desc: 'Member of Customer Escalations only' }
+const DEMO_PERSONAS = [
+  {
+    role: 'ADMIN',
+    name: 'Alice Admin',
+    email: 'admin@newtonite.io',
+    tagline: 'System Governance & Approvals',
+    description: 'Full team governance, closed-item reopening & final workflow approvals.'
+  },
+  {
+    role: 'LEAD',
+    name: 'Leo Lead',
+    email: 'lead@newtonite.io',
+    tagline: 'Incident Review & Resolution',
+    description: 'Approves or rejects pending transitions and marks resolved items closed.'
+  },
+  {
+    role: 'MEMBER',
+    name: 'Maya Member',
+    email: 'member@newtonite.io',
+    tagline: 'Core Operator & Responder',
+    description: 'Creates items, claims unassigned incidents, performs edits and posts comments.'
+  },
+  {
+    role: 'VIEWER',
+    name: 'Victor Viewer',
+    email: 'viewer@newtonite.io',
+    tagline: 'Audit & Read-Only Inspection',
+    description: 'Inspects queues and audit timeline without mutation permissions.'
+  },
+  {
+    role: 'EXTERNAL',
+    name: 'Eve External',
+    email: 'extern@newtonite.io',
+    tagline: 'Customer Response Unit',
+    description: 'Member of Customer Escalations; strictly blocked from Platform Core Ops.'
+  }
 ];
 
 export const Login: React.FC = () => {
@@ -17,6 +61,7 @@ export const Login: React.FC = () => {
 
   const [email, setEmail] = useState('member@newtonite.io');
   const [password, setPassword] = useState('Password123!');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,148 +74,207 @@ export const Login: React.FC = () => {
       await login(email, password);
       navigate('/');
     } catch (err: any) {
-      setError(err?.message || 'Failed to authenticate');
+      setError(err?.message || 'Authentication failed. Please check credentials.');
     } finally {
       setLoading(false);
     }
   };
 
-  const selectDemoUser = (userEmail: string) => {
+  const selectPersona = (userEmail: string) => {
     setEmail(userEmail);
     setPassword('Password123!');
     setError(null);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-      <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">
-        {/* Left column: Brand & Context */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-indigo-600/20 border border-indigo-500/40 text-indigo-400">
-              <ShieldAlert className="w-8 h-8 text-indigo-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white">Newtonite Operations Hub</h1>
-              <p className="text-xs font-mono text-indigo-400 tracking-wider uppercase font-semibold">
-                High-Stakes Work Management
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col justify-center relative overflow-hidden p-4 sm:p-6 lg:p-8">
+      {/* Ambient background glows */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-96 h-96 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 left-1/3 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="space-y-3 text-slate-300 text-sm">
-            <p>
-              An internal work-item operations platform engineered for zero data divergence, atomic concurrency,
-              optimistic locking, and reliable asynchronous outbox processing.
+      <div className="max-w-6xl w-full mx-auto grid lg:grid-cols-12 gap-8 items-center relative z-10">
+        {/* Left Section: Brand & Strategic Visual Overview */}
+        <div className="lg:col-span-7 space-y-8 pr-0 lg:pr-6">
+          {/* Brand header */}
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
+              <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+              <span>Enterprise Operations Hub · High Stakes Edition</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+              Operations, <br />
+              <span className="gradient-text-indigo">under control.</span>
+            </h1>
+
+            <p className="text-sm sm:text-base text-slate-300 max-w-xl leading-relaxed">
+              Engineered for mission-critical teams operating under peak pressure. Guarantees zero lost updates,
+              atomic concurrent claims, and durable transactional outbox delivery.
             </p>
-            <div className="space-y-2 pt-2">
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                Atomic conditional claims with conflict detection
+          </div>
+
+          {/* 3 Core Architectural Highlights */}
+          <div className="grid sm:grid-cols-3 gap-3.5 pt-1">
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-1.5">
+              <div className="p-2 rounded-lg bg-indigo-600/20 text-indigo-400 w-fit">
+                <Zap className="w-4 h-4" />
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                Versioned optimistic locking preventing lost updates
+              <div className="text-xs font-bold text-slate-200">Atomic Claims</div>
+              <div className="text-[11px] text-slate-400 leading-normal">
+                Conditional PostgreSQL locking prevents dual-assignment race conditions.
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                Durable outbox worker with abandoned lease recovery
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-1.5">
+              <div className="p-2 rounded-lg bg-cyan-600/20 text-cyan-400 w-fit">
+                <RotateCcw className="w-4 h-4" />
+              </div>
+              <div className="text-xs font-bold text-slate-200">Optimistic OCC</div>
+              <div className="text-[11px] text-slate-400 leading-normal">
+                Version-checked mutations return HTTP 409 Conflict instead of silent data loss.
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-1.5">
+              <div className="p-2 rounded-lg bg-emerald-600/20 text-emerald-400 w-fit">
+                <Layers className="w-4 h-4" />
+              </div>
+              <div className="text-xs font-bold text-slate-200">Durable Outbox</div>
+              <div className="text-[11px] text-slate-400 leading-normal">
+                Asynchronous worker with automatic abandoned lease recovery and retries.
               </div>
             </div>
           </div>
 
-          {/* Quick Demo Selector */}
-          <div className="glass-panel p-4 space-y-3 border-slate-800">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              <Users className="w-4 h-4 text-indigo-400" />
-              Quick Demo Accounts
+          {/* Interactive Persona Selector Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-indigo-400" />
+                Select Demo Persona to Sign In
+              </span>
+              <span className="text-[10px] text-indigo-400 font-mono">Password: Password123!</span>
             </div>
-            <div className="grid grid-cols-1 gap-2">
-              {DEMO_ACCOUNTS.map((acc) => (
-                <button
-                  key={acc.email}
-                  type="button"
-                  onClick={() => selectDemoUser(acc.email)}
-                  className={`text-left p-2.5 rounded-lg border transition-all flex items-center justify-between text-xs ${
-                    email === acc.email
-                      ? 'bg-indigo-950/60 border-indigo-500 text-indigo-200'
-                      : 'bg-slate-900/50 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/50'
-                  }`}
-                >
-                  <div>
-                    <div className="font-semibold text-slate-200 flex items-center gap-2">
-                      {acc.name}
-                      <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-indigo-300 border border-slate-700">
-                        {acc.role}
-                      </span>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2.5">
+              {DEMO_PERSONAS.map((p) => {
+                const isSelected = email === p.email;
+                return (
+                  <button
+                    key={p.email}
+                    type="button"
+                    onClick={() => selectPersona(p.email)}
+                    className={`text-left p-3 rounded-xl border transition-all relative ${
+                      isSelected
+                        ? 'bg-indigo-950/60 border-indigo-500/70 shadow-[0_0_15px_rgba(99,102,241,0.25)]'
+                        : 'bg-slate-900/40 border-slate-800/80 hover:bg-slate-900/80 hover:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-xs font-bold text-slate-100">{p.name}</span>
+                      <RoleBadge role={p.role} />
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">{acc.desc}</div>
-                  </div>
-                  <span className="text-[11px] text-indigo-400 font-mono">Select</span>
-                </button>
-              ))}
+                    <div className="text-[11px] text-indigo-300 font-medium">{p.tagline}</div>
+                    <div className="text-[10px] text-slate-400 mt-1 line-clamp-1">{p.description}</div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Right column: Login form */}
-        <div className="glass-panel p-8 border-slate-800 shadow-2xl relative">
-          <h2 className="text-xl font-bold text-slate-100 mb-1">Sign In to Hub</h2>
-          <p className="text-xs text-slate-400 mb-6">Enter your credentials or select a demo profile on the left</p>
-
-          {error && (
-            <div className="mb-5 p-3 rounded-lg bg-rose-950/50 border border-rose-800/60 text-rose-300 text-xs">
-              {error}
+        {/* Right Section: High-Polish Glass Login Form */}
+        <div className="lg:col-span-5">
+          <div className="glass-panel p-6 sm:p-8 border-slate-800/90 shadow-2xl relative">
+            <div className="mb-6 space-y-1">
+              <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                <span>Sign In to Hub</span>
+              </h2>
+              <p className="text-xs text-slate-400">
+                Access your team queue or select a pre-seeded profile on the left.
+              </p>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="input-label" htmlFor="email-input">Work Email</label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-                <input
-                  id="email-input"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="input-field pl-9"
-                  placeholder="name@newtonite.io"
-                />
+            {error && (
+              <div className="mb-5 p-3 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                <span>{error}</span>
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="input-label" htmlFor="password-input">Password</label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-                <input
-                  id="password-input"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input-field pl-9"
-                  placeholder="••••••••••••"
-                />
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="input-label" htmlFor="email-input">
+                  Work Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
+                  <input
+                    id="email-input"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="input-field pl-9 text-xs"
+                    placeholder="name@newtonite.io"
+                  />
+                </div>
               </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="input-label mb-0" htmlFor="password-input">
+                    Password
+                  </label>
+                </div>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
+                  <input
+                    id="password-input"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input-field pl-9 pr-9 text-xs"
+                    placeholder="••••••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full py-2.5 text-xs font-semibold justify-center mt-3"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Authenticating Session...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Sign In to Operations Hub
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+              <span className="font-mono">Newtonite v1.0.0</span>
+              <span className="flex items-center gap-1 text-emerald-400">
+                <CheckCircle className="w-3.5 h-3.5" /> Security Enforced
+              </span>
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full justify-center py-2.5 mt-2"
-            >
-              {loading ? 'Authenticating...' : 'Sign In'}
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
-
-          <div className="mt-6 pt-4 border-t border-slate-800/80 text-center">
-            <span className="text-[11px] text-slate-500 font-mono">
-              Newtonite Operations Platform · Role-Based Security
-            </span>
           </div>
         </div>
       </div>
