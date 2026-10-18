@@ -1,5 +1,6 @@
 import React from 'react';
 import { WorkItemStatus, Priority, Role } from '../types/index.js';
+import { formatEnum } from '../utils/format.js';
 
 interface StatusBadgeProps {
   status: WorkItemStatus | string;
@@ -12,7 +13,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   showDot = true,
   className = ''
 }) => {
-  const formatted = status.replace('_', ' ');
+  const formatted = formatEnum(status);
 
   return (
     <span className={`badge-base badge-status-${status} ${className}`}>

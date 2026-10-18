@@ -690,7 +690,15 @@ export async function getDashboardMetrics(userId: string) {
     };
   }
 
-  const [assignedToMe, unassignedUrgent, awaitingApproval, openCount] = await Promise.all([
+  const [
+    assignedToMe,
+    unassignedUrgent,
+    awaitingApproval,
+    openCount,
+    myCount,
+    urgentCount,
+    approvalCount
+  ] = await Promise.all([
     prisma.workItem.findMany({
       where: {
         teamId: { in: teamIds },
@@ -734,6 +742,27 @@ export async function getDashboardMetrics(userId: string) {
         teamId: { in: teamIds },
         status: { in: [WorkItemStatus.OPEN, WorkItemStatus.IN_PROGRESS] }
       }
+    }),
+    prisma.workItem.count({
+      where: {
+        teamId: { in: teamIds },
+        assigneeId: userId,
+        status: { in: [WorkItemStatus.OPEN, WorkItemStatus.IN_PROGRESS, WorkItemStatus.AWAITING_APPROVAL] }
+      }
+    }),
+    prisma.workItem.count({
+      where: {
+        teamId: { in: teamIds },
+        assigneeId: null,
+        priority: { in: [Priority.URGENT, Priority.HIGH] },
+        status: WorkItemStatus.OPEN
+      }
+    }),
+    prisma.workItem.count({
+      where: {
+        teamId: { in: teamIds },
+        status: WorkItemStatus.AWAITING_APPROVAL
+      }
     })
   ]);
 
@@ -742,9 +771,9 @@ export async function getDashboardMetrics(userId: string) {
     unassignedUrgent,
     awaitingApproval,
     counts: {
-      myCount: assignedToMe.length,
-      urgentCount: unassignedUrgent.length,
-      approvalCount: awaitingApproval.length,
+      myCount,
+      urgentCount,
+      approvalCount,
       openCount
     }
   };

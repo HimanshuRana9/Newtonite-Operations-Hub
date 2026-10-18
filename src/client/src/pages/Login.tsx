@@ -14,8 +14,10 @@ import {
   Layers,
   CheckCircle,
   Users,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
+import { Robot } from '../components/Robot.js';
 
 const DEMO_PERSONAS = [
   {
@@ -34,7 +36,7 @@ const DEMO_PERSONAS = [
   },
   {
     role: 'MEMBER',
-    name: 'Maya Member',
+    name: 'Zoro Member',
     email: 'member@newtonite.io',
     tagline: 'Core Operator & Responder',
     description: 'Creates items, claims unassigned incidents, performs edits and posts comments.'
@@ -98,6 +100,20 @@ export const Login: React.FC = () => {
         <div className="lg:col-span-7 space-y-8 pr-0 lg:pr-6">
           {/* Brand header */}
           <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl grid place-items-center border border-indigo-400/50 bg-gradient-to-br from-blue-600/30 to-indigo-600/30 text-indigo-300 shadow-[0_0_20px_rgba(99,102,241,0.35)]">
+                <ShieldAlert className="w-6 h-6 text-indigo-400" />
+              </div>
+              <div className="leading-tight">
+                <div className="font-extrabold text-white text-xl tracking-tight">
+                  Newtonite <span className="text-sky-400">Ops Hub</span>
+                </div>
+                <div className="text-[10px] tracking-widest uppercase font-semibold text-slate-500">
+                  OPERATIONS CONSOLE
+                </div>
+              </div>
+            </div>
+
             <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
               <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
               <span>Enterprise Operations Hub · High Stakes Edition</span>
@@ -147,6 +163,22 @@ export const Login: React.FC = () => {
             </div>
           </div>
 
+          {/* 3D Robot Mascot Stage */}
+          <div className="flex items-center gap-4 p-4 rounded-2xl border border-blue-500/20 bg-gradient-to-r from-blue-950/30 to-indigo-950/20 backdrop-blur-xl shadow-[0_0_20px_rgba(59,130,246,0.15)]">
+            <div className="shrink-0">
+              <Robot size={75} showHalo={true} />
+            </div>
+            <div className="text-xs space-y-1">
+              <div className="font-bold text-slate-100 flex items-center gap-1.5 text-sm">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                Meet Your Newtonite Ops Co-Pilot
+              </div>
+              <p className="text-slate-300 text-xs leading-relaxed">
+                Autonomous outbox event delivery, real-time race detection, and conflict alerts active across all queues.
+              </p>
+            </div>
+          </div>
+
           {/* Interactive Persona Selector Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -186,9 +218,9 @@ export const Login: React.FC = () => {
 
         {/* Right Section: High-Polish Glass Login Form */}
         <div className="lg:col-span-5">
-          <div className="glass-panel p-6 sm:p-8 border-slate-800/90 shadow-2xl relative">
+          <div className="rounded-3xl border border-white/10 bg-[#0c142b]/85 backdrop-blur-2xl p-6 sm:p-8 shadow-[0_0_40px_rgba(30,58,138,0.25)] relative">
             <div className="mb-6 space-y-1">
-              <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+              <h2 className="text-2xl font-black text-white flex items-center gap-2">
                 <span>Sign In to Hub</span>
               </h2>
               <p className="text-xs text-slate-400">
@@ -197,7 +229,7 @@ export const Login: React.FC = () => {
             </div>
 
             {error && (
-              <div className="mb-5 p-3 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
+              <div className="mb-5 p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
                 <span>{error}</span>
               </div>
@@ -205,44 +237,44 @@ export const Login: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="input-label" htmlFor="email-input">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5" htmlFor="email-input">
                   Work Email Address
                 </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
+                <div className="relative flex items-center">
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                   <input
                     id="email-input"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="input-field pl-9 text-xs"
+                    className="w-full !pl-11 !pr-4 py-2.5 rounded-xl border border-white/10 bg-[#080d1b]/90 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/40 shadow-inner transition"
                     placeholder="name@newtonite.io"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="input-label mb-0" htmlFor="password-input">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400" htmlFor="password-input">
                     Password
                   </label>
                 </div>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
+                <div className="relative flex items-center">
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
                   <input
                     id="password-input"
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input-field pl-9 pr-9 text-xs"
+                    className="w-full !pl-11 !pr-11 py-2.5 rounded-xl border border-white/10 bg-[#080d1b]/90 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/40 shadow-inner transition"
                     placeholder="••••••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300"
+                    className="absolute right-3.5 p-1 text-slate-400 hover:text-slate-200 transition"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -253,11 +285,11 @@ export const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full py-2.5 text-xs font-semibold justify-center mt-3"
+                className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(37,99,235,0.4)] transition"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Authenticating Session...
                   </span>
                 ) : (
@@ -269,9 +301,9 @@ export const Login: React.FC = () => {
               </button>
             </form>
 
-            <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
               <span className="font-mono">Newtonite v1.0.0</span>
-              <span className="flex items-center gap-1 text-emerald-400">
+              <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
                 <CheckCircle className="w-3.5 h-3.5" /> Security Enforced
               </span>
             </div>

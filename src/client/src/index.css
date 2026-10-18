@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ==========================================================================
    Newtonite Operations Hub — Design System & Tokens
    Inspired by Linear, Vercel & Enterprise Operations Command Centers
@@ -78,6 +82,19 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
 }
 
 html, body {
@@ -207,6 +224,45 @@ body::after {
 }
 
 /* ==========================================================================
+   KPI Metric Cards (Aligned Command Center Grid)
+   ========================================================================== */
+
+.kpi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem 1.35rem;
+  position: relative;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-card:hover {
+  background: var(--bg-surface-elevated);
+  border-color: rgba(99, 102, 241, 0.45);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-card-blue {
+  border-left: 3px solid #3b82f6;
+}
+
+.kpi-card-rose {
+  border-left: 3px solid #f43f5e;
+}
+
+.kpi-card-purple {
+  border-left: 3px solid #a855f7;
+}
+
+.kpi-card-emerald {
+  border-left: 3px solid #10b981;
+}
+
+/* ==========================================================================
    Buttons
    ========================================================================== */
 
@@ -285,6 +341,33 @@ body::after {
   border-color: #f43f5e;
   box-shadow: var(--shadow-glow-rose);
   transform: translateY(-1px);
+}
+
+.btn-claim {
+  background: rgba(244, 63, 94, 0.14);
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-claim:hover:not(:disabled) {
+  background: rgba(244, 63, 94, 0.28);
+  border-color: #f43f5e;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-claim:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-success {
@@ -689,3 +772,180 @@ select.input-field {
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* ==========================================================================
+   3D Robot Co-Pilot Mascot & Orbit Animations
+   ========================================================================== */
+
+.robot {
+  width: 100px;
+  height: 130px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  filter: drop-shadow(0 12px 18px rgba(65, 76, 255, 0.28));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.robot:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+.robot-antenna {
+  height: 13px;
+  width: 2px;
+  background: #8392ff;
+  position: relative;
+  margin-bottom: 2px;
+}
+
+.robot-antenna::before {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7ee8ff;
+  top: -4px;
+  left: -2.5px;
+  box-shadow: 0 0 12px #70dfff;
+  animation: antenna-glow 2s infinite ease-in-out;
+}
+
+@keyframes antenna-glow {
+  0%, 100% { box-shadow: 0 0 8px #70dfff; }
+  50% { box-shadow: 0 0 16px #70dfff, 0 0 24px rgba(112, 223, 255, 0.6); }
+}
+
+.robot-head {
+  width: 80px;
+  height: 65px;
+  border: 1px solid rgba(168, 181, 255, 0.6);
+  border-radius: 24px 24px 20px 20px;
+  background: linear-gradient(145deg, #d7e4ff, #7587e8 52%, #4654a6);
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.6), 0 0 30px rgba(102, 119, 255, 0.22);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.robot-ear {
+  position: absolute;
+  top: 27px;
+  width: 9px;
+  height: 18px;
+  border-radius: 5px;
+  background: linear-gradient(#7be9ff, #7182ff);
+  z-index: -1;
+}
+
+.robot-ear.left { left: -4px; }
+.robot-ear.right { right: -4px; }
+
+.robot-glass {
+  width: 57px;
+  height: 29px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #0c1a40, #17285b);
+  border: 1px solid rgba(165, 233, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  box-shadow: inset 0 0 12px rgba(57, 201, 255, 0.2);
+}
+
+.robot-glass span {
+  width: 7px;
+  height: 9px;
+  border-radius: 50%;
+  background: #78edff;
+  box-shadow: 0 0 10px #78edff;
+}
+
+.robot-smile {
+  height: 3px;
+  width: 14px;
+  border-radius: 4px;
+  background: #d8f5ff;
+  margin-top: 5px;
+}
+
+.robot-body {
+  width: 55px;
+  height: 39px;
+  margin-top: 7px;
+  border-radius: 13px;
+  border: 1px solid rgba(156, 170, 255, 0.6);
+  background: linear-gradient(145deg, #778aff, #343e90);
+  display: grid;
+  place-items: center;
+  color: #b4f4ff;
+  box-shadow: 0 4px 14px rgba(52, 62, 144, 0.4);
+}
+
+.robot-small {
+  transform: scale(0.48);
+  transform-origin: center;
+  width: 48px;
+  height: 65px;
+  filter: none;
+}
+
+.mascot-stage {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  padding-left: 24px;
+}
+
+.mascot-orbit {
+  position: absolute;
+  width: 130px;
+  height: 80px;
+  border: 1px solid rgba(104, 124, 255, 0.27);
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  left: 0;
+}
+
+.mascot-caption {
+  color: #8e9ab7;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-art {
+  width: 150px;
+  height: 130px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.hero-art .robot {
+  transform: scale(0.88);
+  z-index: 1;
+}
+
+.hero-orbit {
+  position: absolute;
+  width: 155px;
+  height: 65px;
+  border: 1px solid rgba(109, 139, 255, 0.45);
+  transform: rotate(-20deg);
+  border-radius: 50%;
+}
+
+.hero-orbit.orbit-b {
+  transform: rotate(35deg);
+  border-color: rgba(65, 214, 229, 0.36);
+  width: 125px;
+}
+

@@ -127,7 +127,7 @@ All seeded accounts use password: `Password123!`
 | :--- | :--- | :--- | :--- |
 | **ADMIN** | Alice Admin | `admin@newtonite.io` | Full governance, team membership management, workflow approvals |
 | **LEAD** | Leo Lead | `lead@newtonite.io` | Approves or rejects items in `AWAITING_APPROVAL`, closes resolved items |
-| **MEMBER** | Maya Member | `member@newtonite.io` | Creates, claims, edits assigned items, posts comments, progresses tasks |
+| **MEMBER** | Zoro Member | `member@newtonite.io` | Creates, claims, edits assigned items, posts comments, progresses tasks |
 | **VIEWER** | Victor Viewer | `viewer@newtonite.io` | Read-only inspection of team tasks; mutations blocked with HTTP 403 |
 | **EXTERNAL** | Eve External | `extern@newtonite.io` | Belongs exclusively to "Customer Escalations"; blocked from Platform Core Ops |
 

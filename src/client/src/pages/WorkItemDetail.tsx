@@ -6,6 +6,8 @@ import { WorkItem, Comment, ActivityEvent, WorkItemStatus, Priority } from '../t
 import { useAuth } from '../context/AuthContext.js';
 import { useToast } from '../context/ToastContext.js';
 import { StatusBadge, PriorityBadge } from '../components/Badge.js';
+import { Modal } from '../components/Modal.js';
+import { formatEnum } from '../utils/format.js';
 import {
   ArrowLeft,
   HandMetal,
@@ -23,7 +25,6 @@ import {
   GitBranch,
   Copy,
   Check,
-  Calendar,
   Layers,
   Sparkles
 } from 'lucide-react';
@@ -42,7 +43,7 @@ export const WorkItemDetail: React.FC = () => {
 
   // Rejection reason modal state
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [rejectReason, setRejectReason] = useState('Requires additional testing and documentation review');
+  const [rejectReason, setRejectReason] = useState('');
 
   // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -87,7 +88,7 @@ export const WorkItemDetail: React.FC = () => {
   // 1. Claim Mutation
   const claimMutation = useMutation({
     mutationFn: () => apiRequest<WorkItem>(`/api/items/${id}/claim`, { method: 'POST' }),
-    onSuccess: (updated) => {
+    onSuccess: () => {
       setErrorMessage(null);
       setConflictNotice(null);
       toast.success('Incident Claimed', 'Ownership assigned to you. Status updated to IN PROGRESS.');
@@ -115,11 +116,12 @@ export const WorkItemDetail: React.FC = () => {
           reason
         })
       }),
-    onSuccess: (updated, variables) => {
+    onSuccess: (_data, variables) => {
       setErrorMessage(null);
       setConflictNotice(null);
       setIsRejectModalOpen(false);
-      toast.success('Status Transitioned', `Item moved to ${variables.targetStatus.replace('_', ' ')}.`);
+      setRejectReason('');
+      toast.success('Status Transitioned', `Item moved to ${formatEnum(variables.targetStatus)}.`);
       invalidateAll();
     },
     onError: (err: any) => {
@@ -230,6 +232,9 @@ export const WorkItemDetail: React.FC = () => {
   const isLeadOrAdmin = hasTeamRole(item.teamId, 'LEAD');
   const isAdmin = hasTeamRole(item.teamId, 'ADMIN');
   const isUnassigned = !item.assigneeId;
+  // Mirrors the server rule (members edit only unassigned or own items). The server stays authoritative.
+  const canEdit =
+    isLeadOrAdmin || (isMember && (isUnassigned || item.assigneeId === user?.id || item.creatorId === user?.id));
 
   const openEditModal = () => {
     setEditTitle(item.title);
@@ -311,6 +316,12 @@ export const WorkItemDetail: React.FC = () => {
       </div>
 
       {/* HTTP 409 Conflict Banner */}
+      {errorMessage && (
+        <div role="alert" className="flex items-start justify-between gap-3 rounded-xl border border-rose-800 bg-rose-950/60 p-3 text-sm text-rose-200">
+          <span>{errorMessage}</span>
+          <button type="button" className="underline whitespace-nowrap" onClick={() => setErrorMessage(null)}>Dismiss</button>
+        </div>
+      )}
       {conflictNotice && (
         <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/80 to-slate-900/90 border border-amber-500/80 text-amber-200 text-xs space-y-2.5 animate-fade-in shadow-2xl">
           <div className="flex items-center gap-2.5 font-bold text-amber-300 text-sm">
@@ -345,7 +356,7 @@ export const WorkItemDetail: React.FC = () => {
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Description & Incident Findings
               </h2>
-              {isMember && (
+              {canEdit && (
                 <button
                   onClick={openEditModal}
                   className="btn-secondary py-1 px-3 text-xs"
@@ -369,7 +380,7 @@ export const WorkItemDetail: React.FC = () => {
                 <span>Workflow State Machine Actions</span>
               </h2>
               <span className="text-[11px] font-mono text-slate-400">
-                Current: <strong className="text-white">{item.status.replace('_', ' ')}</strong>
+                Current: <strong className="text-white">{formatEnum(item.status)}</strong>
               </span>
             </div>
 
@@ -665,8 +676,7 @@ export const WorkItemDetail: React.FC = () => {
 
       {/* Edit Modal with Optimistic Concurrency Control */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-panel w-full max-w-lg p-6 sm:p-7 border-slate-700/80 shadow-2xl space-y-4 animate-fade-in">
+        <Modal onClose={() => setIsEditModalOpen(false)} label="Edit work item" panelClassName="max-w-lg p-6 sm:p-7">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
                 <Edit3 className="w-5 h-5 text-indigo-400" />
@@ -680,6 +690,16 @@ export const WorkItemDetail: React.FC = () => {
               </button>
             </div>
 
+            {conflictNotice && (
+              <div role="alert" className="p-3 rounded-lg bg-amber-950/50 border border-amber-800/70 text-amber-200 text-xs flex items-start justify-between gap-3">
+                <span>
+                  {conflictNotice} Your edits are kept below. Refresh to load the latest version, then re-apply them.
+                </span>
+                <button type="button" onClick={handleRefreshConflict} className="underline font-medium whitespace-nowrap">
+                  Refresh latest
+                </button>
+              </div>
+            )}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -752,14 +772,12 @@ export const WorkItemDetail: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+        </Modal>
       )}
 
       {/* Reject / Return for Rework Modal */}
       {isRejectModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-panel w-full max-w-md p-6 border-slate-700/80 shadow-2xl space-y-4 animate-fade-in">
+        <Modal onClose={() => setIsRejectModalOpen(false)} label="Return item for rework" panelClassName="max-w-md p-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <h2 className="text-sm font-bold text-rose-300 flex items-center gap-2">
                 <XCircle className="w-5 h-5 text-rose-400" />
@@ -808,8 +826,7 @@ export const WorkItemDetail: React.FC = () => {
                 {transitionMutation.isPending ? 'Returning...' : 'Confirm Return'}
               </button>
             </div>
-          </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

@@ -40,7 +40,7 @@ export async function seed() {
 
   const maya = await prisma.user.create({
     data: {
-      name: 'Maya Member',
+      name: 'Zoro Member',
       email: 'member@newtonite.io',
       passwordHash,
       active: true
@@ -65,7 +65,7 @@ export async function seed() {
     }
   });
 
-  console.log('Created users: Alice (Admin), Leo (Lead), Maya (Member), Victor (Viewer), Eve (External)');
+  console.log('Created users: Alice (Admin), Leo (Lead), Zoro (Member), Victor (Viewer), Eve (External)');
 
   // 2. Seed Teams
   const platformTeam = await prisma.team.create({
